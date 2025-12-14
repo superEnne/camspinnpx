@@ -27,11 +27,11 @@ import {
   RotateCcw,
   Square,
   Trophy,
-  Monitor
+  Monitor,
+  X 
 } from 'lucide-react';
 
 // --- CONFIGURATION ---
-// specific to your provided code
 const firebaseConfig = {
   apiKey: "AIzaSyAO3Fhu7_e1Myj2MMqvA3BoAVFCCc-t5qo",
   authDomain: "camspin-5bb72.firebaseapp.com",
@@ -174,13 +174,13 @@ function HomeScreen({ onHost, onJoin, onRejoin }) {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
+    <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
       <div className="mb-12 space-y-4">
         <h2 className="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-400 via-purple-400 to-indigo-400 drop-shadow-2xl">
           Spin the Squad
         </h2>
         <p className="text-slate-400 text-lg md:text-xl max-w-xl mx-auto">
-          The ultimate visual player picker. Join with your camera, watch the shuffle, and pick a winner instantly.
+          The ultimate visual player picker. Snap a selfie, watch the shuffle, and capture the winner's reaction instantly.
         </p>
       </div>
 
@@ -385,9 +385,9 @@ function HostRoom({ userId, onError, onExit }) {
   if (!roomCode) return <div className="text-center pt-20"><Loader2 className="animate-spin w-12 h-12 mx-auto text-fuchsia-500"/></div>;
 
   return (
-    <div className="grid lg:grid-cols-4 gap-8 h-full animate-in fade-in duration-500">
+    <div className="flex flex-col lg:flex-row gap-8 h-full animate-in fade-in duration-500">
       {/* Sidebar: Players List */}
-      <Card className="lg:col-span-1 h-[70vh] flex flex-col order-2 lg:order-1">
+      <Card className="lg:w-1/4 h-[40vh] lg:h-[70vh] flex flex-col order-2 lg:order-1">
         <div className="mb-6 pb-6 border-b border-white/10">
             <h3 className="text-slate-400 text-sm font-bold tracking-wider uppercase mb-2">Room Code</h3>
             <div className="flex items-center justify-between bg-slate-950 p-4 rounded-xl border border-dashed border-slate-700">
@@ -437,15 +437,23 @@ function HostRoom({ userId, onError, onExit }) {
       </Card>
 
       {/* Main Area: Carousel */}
-      <div className="lg:col-span-3 flex flex-col gap-6 order-1 lg:order-2">
+      <div className="lg:w-3/4 flex flex-col gap-6 order-1 lg:order-2">
         <div className="relative flex-1 bg-slate-900/50 rounded-3xl border border-white/5 overflow-hidden flex flex-col justify-center min-h-[500px]">
             {/* Background elements */}
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-800/50 via-slate-950 to-slate-950"></div>
             
             {/* Winner Overlay - Now uses live data */}
             {winnerId && !isSpinning && winner && (
-                <div className="absolute inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-500">
-                    <div className="text-center p-8 bg-gradient-to-b from-slate-900 to-slate-950 border border-fuchsia-500/30 rounded-3xl shadow-2xl shadow-fuchsia-900/50 max-w-md mx-auto transform animate-in zoom-in slide-in-from-bottom-10 duration-500">
+                <div className="absolute inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-500 p-4">
+                    <div className="relative text-center p-8 bg-gradient-to-b from-slate-900 to-slate-950 border border-fuchsia-500/30 rounded-3xl shadow-2xl shadow-fuchsia-900/50 max-w-md w-full mx-auto transform animate-in zoom-in slide-in-from-bottom-10 duration-500">
+                         {/* Close Button */}
+                         <button 
+                            onClick={() => setWinnerId(null)}
+                            className="absolute top-4 right-4 p-2 bg-slate-800/50 hover:bg-slate-700 rounded-full text-slate-400 hover:text-white transition-colors"
+                        >
+                            <X size={20} />
+                        </button>
+
                         <Trophy className="w-16 h-16 text-yellow-400 mx-auto mb-4 drop-shadow-lg animate-bounce" />
                         <h2 className="text-3xl font-black text-white mb-2">WINNER SELECTED!</h2>
                         <div className="w-48 h-64 mx-auto my-6 bg-slate-800 rounded-xl p-2 shadow-xl transform rotate-3 hover:rotate-0 transition-transform duration-300">
@@ -462,7 +470,7 @@ function HostRoom({ userId, onError, onExit }) {
                                 </div>
                             )}
                         </div>
-                        <h3 className="text-3xl font-bold text-fuchsia-400 mb-6">{winner.name || 'Anonymous'}</h3>
+                        <h3 className="text-3xl font-bold text-fuchsia-400 mb-6 truncate">{winner.name || 'Anonymous'}</h3>
                         <Button onClick={() => setWinnerId(null)} className="w-full">
                             Shuffle Again
                         </Button>
@@ -483,11 +491,11 @@ function HostRoom({ userId, onError, onExit }) {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <div className="flex gap-4">
+          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto px-4">
             <Button 
               onClick={handleSpin} 
               disabled={isSpinning || players.length < 2}
-              className="text-xl px-16 py-6 rounded-full shadow-2xl shadow-fuchsia-500/20 text-lg uppercase tracking-wider"
+              className="w-full sm:w-auto text-xl px-16 py-6 rounded-full shadow-2xl shadow-fuchsia-500/20 text-lg uppercase tracking-wider"
             >
               {isSpinning ? 'Shuffling...' : 'SHUFFLE THE SQUAD'}
             </Button>
@@ -496,7 +504,7 @@ function HostRoom({ userId, onError, onExit }) {
               <Button 
                 onClick={handleForceStop}
                 variant="danger"
-                className="text-xl px-8 py-6 rounded-full shadow-2xl shadow-red-500/20 text-lg uppercase tracking-wider"
+                className="w-full sm:w-auto text-xl px-8 py-6 rounded-full shadow-2xl shadow-red-500/20 text-lg uppercase tracking-wider"
               >
                 <Square size={20} className="fill-current" />
                 STOP SHUFFLE
@@ -514,6 +522,8 @@ function PlayerRoom({ userId, initialRoomCode, onError, onExit }) {
     const [roomCode] = useState(initialRoomCode);
     const [name, setName] = useState('');
     const [joined, setJoined] = useState(false);
+    const [hasPhoto, setHasPhoto] = useState(false); // Track if they've taken their lobby selfie
+    const [countdown, setCountdown] = useState(null); // Initial selfie countdown
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
     const [stream, setStream] = useState(null);
@@ -521,7 +531,6 @@ function PlayerRoom({ userId, initialRoomCode, onError, onExit }) {
     const [winnerId, setWinnerId] = useState(null);
     const [players, setPlayers] = useState([]);
     const [isRoomClosed, setIsRoomClosed] = useState(false);
-    const [isCameraActive, setIsCameraActive] = useState(true);
 
     // Save session
     useEffect(() => {
@@ -534,7 +543,6 @@ function PlayerRoom({ userId, initialRoomCode, onError, onExit }) {
     useEffect(() => {
         if (!roomCode || !joined) return;
         
-        // Listen to room document
         const roomUnsub = onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'rooms', roomCode), (doc) => {
             if (doc.exists()) {
                 const data = doc.data();
@@ -549,7 +557,6 @@ function PlayerRoom({ userId, initialRoomCode, onError, onExit }) {
             setIsRoomClosed(true);
         });
 
-        // Listen to players collection
         const playersUnsub = onSnapshot(
             collection(db, 'artifacts', appId, 'public', 'data', 'rooms', roomCode, 'players'),
             (snapshot) => {
@@ -565,127 +572,107 @@ function PlayerRoom({ userId, initialRoomCode, onError, onExit }) {
         };
     }, [roomCode, joined]);
 
-    // Setup camera with optimized settings
+    // Camera Setup - Fix: Re-attach stream whenever video element mounts or stream changes
     useEffect(() => {
         const startCamera = async () => {
             try {
-                // Optimized camera settings for performance
                 const constraints = {
-                    video: { 
-                        width: { ideal: 640, max: 640 },
-                        height: { ideal: 480, max: 480 },
-                        frameRate: { ideal: 15, max: 20 },
-                        facingMode: "user"
-                    }, 
-                    audio: false 
+                    video: { facingMode: "user", width: 640, height: 480 },
+                    audio: false
                 };
-                
                 const s = await navigator.mediaDevices.getUserMedia(constraints);
                 setStream(s);
-                if (videoRef.current) {
-                    videoRef.current.srcObject = s;
-                    videoRef.current.onloadedmetadata = () => {
-                        videoRef.current.play().catch(e => {
-                            console.warn("Autoplay prevented:", e);
-                            // Try with user interaction fallback
-                            document.addEventListener('click', () => {
-                                videoRef.current.play().catch(console.error);
-                            }, { once: true });
-                        });
-                    };
-                }
-                setIsCameraActive(true);
             } catch (err) {
                 console.error("Camera Error:", err);
-                onError("Camera access required to play!");
-                setIsCameraActive(false);
+                onError("Camera access required!");
             }
         };
         
-        if (joined && !isRoomClosed) {
-            startCamera();
+        if (joined && !isRoomClosed && !stream) startCamera();
+        
+        return () => {
+             // We don't stop tracks here to keep stream alive during navigation/hide
+        };
+    }, [joined, isRoomClosed, stream]);
+
+    // Ensure stream is attached to video ref whenever it's available and not 'spinning'
+    useEffect(() => {
+        if (videoRef.current && stream) {
+            videoRef.current.srcObject = stream;
+        }
+    }, [stream, gameState]); // Re-run when gameState changes (view might unhide)
+
+    // --- NEW: Single Snapshot Logic ---
+    const captureSnapshot = async (reason = 'update') => {
+        if (!videoRef.current || !canvasRef.current) {
+            console.warn("Camera not ready for snapshot");
+            return;
         }
         
-        return () => {
-            if (stream) {
-                stream.getTracks().forEach(track => {
-                    track.stop();
-                });
-            }
-        };
-    }, [joined, isRoomClosed]);
-
-    // Optimized camera upload loop - Throttled to 2-3 FPS
-    useEffect(() => {
-        if (!joined || !stream || isRoomClosed || !roomCode || !isCameraActive) return;
+        const ctx = canvasRef.current.getContext('2d');
+        // Draw current video frame to canvas
+        ctx.drawImage(videoRef.current, 0, 0, 320, 240);
         
-        let isActive = true;
-        let animationFrameId;
-        let lastCaptureTime = 0;
-        const CAPTURE_INTERVAL = 400; // ~2.5 FPS
+        // Convert to base64
+        const base64 = canvasRef.current.toDataURL('image/jpeg', 0.6); // Lower quality for speed
+        
+        try {
+            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'rooms', roomCode, 'players', userId), {
+                photo: base64,
+                updatedAt: serverTimestamp()
+            });
+            if (reason === 'initial') setHasPhoto(true);
+        } catch (e) {
+            console.error("Snapshot upload failed:", e);
+        }
+    };
 
-        const captureFrame = async () => {
-            if (!isActive || !videoRef.current || !canvasRef.current || videoRef.current.readyState < 2) {
-                animationFrameId = requestAnimationFrame(captureFrame);
-                return;
-            }
+    // --- NEW: Timer Logic for Initial Selfie ---
+    // 1. Start timer when stream is ready and we don't have a photo yet
+    useEffect(() => {
+        if (stream && !hasPhoto && countdown === null) {
+            setCountdown(3);
+        }
+    }, [stream, hasPhoto]); 
 
-            const now = Date.now();
-            if (now - lastCaptureTime < CAPTURE_INTERVAL) {
-                animationFrameId = requestAnimationFrame(captureFrame);
-                return;
-            }
+    // 2. Handle the Countdown Tick
+    useEffect(() => {
+        if (countdown === null) return;
+        
+        if (hasPhoto) {
+            setCountdown(null);
+            return;
+        }
 
-            lastCaptureTime = now;
+        if (countdown > 0) {
+            const timer = setTimeout(() => setCountdown(c => c - 1), 1000);
+            return () => clearTimeout(timer);
+        } else {
+            captureSnapshot('initial');
+        }
+    }, [countdown, hasPhoto]);
 
-            const ctx = canvasRef.current.getContext('2d');
-            const video = videoRef.current;
-            
-            // Draw at optimized resolution (320x240 for faster processing)
-            ctx.drawImage(video, 0, 0, 320, 240);
-            
-            // Compress with moderate quality
-            const base64 = canvasRef.current.toDataURL('image/jpeg', 0.7);
-            
-            try {
-                // Update player photo in database
-                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'rooms', roomCode, 'players', userId), {
-                    photo: base64,
-                    updatedAt: serverTimestamp()
-                });
-            } catch (e) {
-                // Silent fail - network issues are expected
-                console.warn("Upload failed:", e);
-            }
 
-            if (isActive) {
-                animationFrameId = requestAnimationFrame(captureFrame);
-            }
-        };
-
-        // Start the capture loop
-        captureFrame();
-
-        return () => {
-            isActive = false;
-            if (animationFrameId) {
-                cancelAnimationFrame(animationFrameId);
-            }
-        };
-    }, [joined, stream, roomCode, userId, isRoomClosed, isCameraActive]);
+    // --- NEW: Auto-Snap on Win ---
+    useEffect(() => {
+        // If I am the winner, take a "Reaction Shot"
+        if (winnerId === userId && gameState === 'finished') {
+            console.log("I WON! Taking reaction shot...");
+            // Small delay to ensure they are looking at the screen realizing they won
+            setTimeout(() => {
+                captureSnapshot('reaction');
+            }, 500);
+        }
+    }, [winnerId, gameState, userId]);
 
     const handleJoin = async () => {
         if (!name.trim()) return;
-        
         try {
             const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', roomCode);
             const roomSnap = await getDoc(roomRef);
-            
-            if (!roomSnap.exists()) {
-                onError("Room not found! Check the code.");
-                return;
-            }
+            if (!roomSnap.exists()) { onError("Room not found!"); return; }
 
+            // Join without photo first
             await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'rooms', roomCode, 'players', userId), {
                 name: name.trim(),
                 joinedAt: serverTimestamp(),
@@ -695,7 +682,7 @@ function PlayerRoom({ userId, initialRoomCode, onError, onExit }) {
             setJoined(true);
         } catch (e) {
             console.error(e);
-            onError("Connection failed. Try again.");
+            onError("Connection failed.");
         }
     };
 
@@ -705,30 +692,15 @@ function PlayerRoom({ userId, initialRoomCode, onError, onExit }) {
                 await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'rooms', roomCode, 'players', userId));
                 localStorage.removeItem('camspin_session');
                 onExit();
-            } catch (e) {
-                console.error("Error leaving room:", e);
-                onExit();
-            }
+            } catch (e) { onExit(); }
         }
     };
 
-    // Get current winner from players array
     const winner = winnerId ? players.find(p => p.id === winnerId) : null;
-
-    // Toggle camera
-    const toggleCamera = () => {
-        if (stream) {
-            const videoTrack = stream.getVideoTracks()[0];
-            if (videoTrack) {
-                videoTrack.enabled = !videoTrack.enabled;
-                setIsCameraActive(videoTrack.enabled);
-            }
-        }
-    };
 
     if (isRoomClosed) {
         return (
-            <div className="flex items-center justify-center min-h-[60vh] text-center">
+            <div className="flex items-center justify-center min-h-[60vh] text-center px-4">
                  <Card className="max-w-md w-full animate-in zoom-in duration-300">
                     <div className="mb-6">
                         <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -745,151 +717,96 @@ function PlayerRoom({ userId, initialRoomCode, onError, onExit }) {
 
     if (!joined) {
         return (
-            <div className="max-w-md mx-auto pt-20 animate-in slide-in-from-bottom duration-500">
+            <div className="max-w-md mx-auto pt-20 px-4 animate-in slide-in-from-bottom duration-500">
                 <Card>
                     <div className="text-center mb-6">
                         <h2 className="text-2xl font-bold mb-2">Join Room</h2>
                         <span className="font-mono text-3xl font-black text-fuchsia-400 tracking-widest">{roomCode}</span>
                     </div>
-                    
-                    <div className="space-y-4">
-                        <div>
-                            <label className="block text-sm text-slate-400 mb-2">Your Name</label>
-                            <input 
-                                className="w-full bg-slate-950 border border-slate-700 p-3 rounded-lg focus:border-fuchsia-500 outline-none text-white transition-all"
-                                value={name}
-                                onChange={e => setName(e.target.value)}
-                                placeholder="e.g. Gamer123"
-                                autoFocus
-                            />
-                        </div>
-                        <Button className="w-full" onClick={handleJoin} disabled={!name}>
-                            Enable Camera & Join
-                        </Button>
-                    </div>
+                    <input 
+                        className="w-full bg-slate-950 border border-slate-700 p-3 rounded-lg mb-4 text-white"
+                        value={name} onChange={e => setName(e.target.value)} placeholder="Your Name" autoFocus
+                    />
+                    <Button className="w-full" onClick={handleJoin} disabled={!name}>Start Camera & Join</Button>
                 </Card>
             </div>
         );
     }
 
     return (
-        <div className="flex flex-col items-center justify-center pt-8 max-w-6xl mx-auto animate-in fade-in duration-500">
-            {gameState === 'finished' && winner ? (
-                 <div className="w-full mb-8 animate-in slide-in-from-top duration-700">
-                    <div className={`p-6 rounded-2xl border ${winner.id === userId ? 'bg-gradient-to-b from-yellow-500/20 to-orange-500/20 border-yellow-500' : 'bg-slate-800 border-slate-700'} text-center`}>
-                        <h2 className="text-3xl font-black mb-2">{winner.id === userId ? "YOU WON!" : "WINNER"}</h2>
-                        <div className="w-24 h-24 mx-auto rounded-full overflow-hidden border-4 border-white/20 my-4">
-                            {winner.photo ? (
-                                <img 
-                                    src={winner.photo} 
-                                    className="w-full h-full object-cover" 
-                                    alt="winner"
-                                    key={winner.photo}
-                                />
-                            ) : (
-                                <div className="w-full h-full flex items-center justify-center bg-slate-700">
-                                    <Users className="w-8 h-8 text-slate-500" />
-                                </div>
-                            )}
-                        </div>
-                        <p className="text-xl font-bold">{winner.name}</p>
+        <div className="flex flex-col items-center pt-8 max-w-lg mx-auto px-4 w-full">
+             {/* Winner Display */}
+             {gameState === 'finished' && winner && (
+                 <div className="w-full mb-8 animate-in slide-in-from-top duration-500">
+                    <div className={`p-6 rounded-2xl border ${winner.id === userId ? 'bg-yellow-500/20 border-yellow-500' : 'bg-slate-800 border-slate-700'} text-center`}>
+                        <h2 className="text-3xl font-black mb-2 text-white">{winner.id === userId ? "YOU WON!" : "WINNER"}</h2>
+                        <p className="text-xl font-bold text-white">{winner.name}</p>
                     </div>
                  </div>
-            ) : gameState === 'spinning' ? (
-                <div className="w-full mb-8 text-center">
-                    <h2 className="text-2xl font-bold text-fuchsia-400 mb-2">Cards Shuffling...</h2>
-                    <p className="text-slate-400 mb-6">Good luck!</p>
-                    <div className="w-full bg-slate-900/50 rounded-3xl border border-white/5 overflow-hidden min-h-[400px]">
-                        <div className="relative w-full py-8">
+            )}
+
+            {/* LIVE SHUFFLE DISPLAY */}
+            {gameState === 'spinning' && (
+                <div className="w-full mb-8 animate-in zoom-in duration-300">
+                    <h2 className="text-2xl font-bold text-fuchsia-400 text-center mb-4 animate-pulse">SHUFFLING...</h2>
+                    <div className="w-full bg-slate-900/50 rounded-3xl border border-white/5 overflow-hidden">
+                        <div className="relative w-full py-6">
                             <CardCarousel 
                                 players={players} 
                                 spinning={true}
-                                showOnly={true}
+                                showOnly={true} // Read-only mode for players
                             />
                         </div>
                     </div>
                 </div>
-            ) : null}
+            )}
+            
+            {/* CAMERA CARD 
+               Fix: Used 'style={{ display: ... }}' to hide instead of unmounting. 
+               This keeps the stream active for reaction shots.
+            */}
+            <Card className="w-full" style={{ display: gameState === 'spinning' ? 'none' : 'block' }}>
+                <div className="relative aspect-video bg-black rounded-lg overflow-hidden mb-4 shadow-inner border border-white/10">
+                    <canvas ref={canvasRef} width={320} height={240} className="hidden" />
+                    <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-cover transform scale-x-[-1]" />
+                    
+                    {/* Countdown Overlay */}
+                    {countdown !== null && countdown > 0 && (
+                        <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-sm animate-in fade-in">
+                            <span className="text-9xl font-black text-white drop-shadow-lg animate-bounce">
+                                {countdown}
+                            </span>
+                        </div>
+                    )}
 
-            <div className="grid md:grid-cols-3 gap-8 w-full">
-                {/* Camera Card */}
-                <div className="md:col-span-2">
-                    <Card className="w-full overflow-hidden relative">
-                        <div className="absolute top-4 left-4 z-10 bg-black/50 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-2">
-                            <div className={`w-2 h-2 rounded-full ${isCameraActive ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`} />
-                            {isCameraActive ? 'LIVE' : 'CAMERA OFF'}
-                        </div>
-                        
-                        <div className="absolute top-4 right-4 z-10 flex gap-2">
-                            <button 
-                                onClick={toggleCamera}
-                                className="bg-black/50 p-2 rounded-full hover:bg-black/70 transition-colors"
-                                title={isCameraActive ? "Turn camera off" : "Turn camera on"}
-                            >
-                                <Camera size={16} className={isCameraActive ? "text-green-400" : "text-red-400"} />
-                            </button>
-                        </div>
-                        
-                        <canvas ref={canvasRef} width={320} height={240} className="hidden" />
-                        
-                        <div className="aspect-video bg-black rounded-lg overflow-hidden relative shadow-inner">
-                            {isCameraActive ? (
-                                <video 
-                                    ref={videoRef} 
-                                    autoPlay 
-                                    playsInline 
-                                    muted 
-                                    className="w-full h-full object-cover transform scale-x-[-1]" 
-                                />
-                            ) : (
-                                <div className="w-full h-full flex items-center justify-center bg-slate-900">
-                                    <div className="text-center">
-                                        <Camera size={48} className="text-slate-600 mx-auto mb-2" />
-                                        <p className="text-slate-500">Camera is off</p>
-                                        <button 
-                                            onClick={toggleCamera}
-                                            className="mt-2 text-fuchsia-400 text-sm hover:text-fuchsia-300"
-                                        >
-                                            Turn camera on
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-
-                        <div className="mt-6 flex items-center justify-between">
-                            <div className="inline-flex items-center gap-2 text-fuchsia-400 text-xs font-mono bg-fuchsia-500/10 px-3 py-1 rounded-full">
-                                <Monitor size={12} />
-                                Connected as {name}
-                            </div>
-                            <button onClick={handleLeaveRoom} className="text-xs text-slate-500 hover:text-white underline">
-                                Leave Room
-                            </button>
-                        </div>
-                    </Card>
+                    {/* Status Badge */}
+                    <div className="absolute top-3 left-3 bg-black/60 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-white flex items-center gap-2">
+                        <div className={`w-2 h-2 rounded-full ${hasPhoto ? 'bg-green-500' : 'bg-orange-500 animate-pulse'}`} />
+                        {hasPhoto ? 'READY' : 'TAKE PHOTO'}
+                    </div>
                 </div>
 
-                {/* Players List Card */}
-                <div>
-                    <Card className="h-full">
-                        <h3 className="font-bold text-white mb-4">Players ({players.length})</h3>
-                        <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2">
-                            {players.map(p => (
-                                <div key={p.id} className="flex items-center gap-3 bg-slate-800/50 p-3 rounded-xl border border-white/5">
-                                    <div className="w-10 h-10 rounded-full bg-slate-700 overflow-hidden border border-white/10 relative">
-                                        {p.photo ? (
-                                            <img src={p.photo} className="w-full h-full object-cover" alt="player" />
-                                        ) : (
-                                            <Users className="w-5 h-5 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-slate-500" />
-                                        )}
-                                    </div>
-                                    <span className="font-medium truncate">{p.name || 'Anonymous'}</span>
-                                </div>
-                            ))}
-                        </div>
-                    </Card>
+                <div className="space-y-3">
+                    {/* The Manual Snap Button - Always available when not spinning */}
+                    <Button 
+                        onClick={() => captureSnapshot('initial')} 
+                        className="w-full"
+                        variant={hasPhoto ? "secondary" : "primary"}
+                    >
+                        <Camera size={20} />
+                        {hasPhoto ? "Retake Selfie" : (countdown ? "Snap Now (Skip Timer)" : "Snap Selfie")}
+                    </Button>
+                    
+                    <p className="text-xs text-slate-500 text-center">
+                        {hasPhoto ? "Wait for the host to spin!" : "Smile! Taking photo automatically..."}
+                    </p>
+
+                    <div className="pt-4 border-t border-white/10 flex justify-between items-center">
+                        <span className="text-xs text-slate-500">Connected as {name}</span>
+                        <button onClick={handleLeaveRoom} className="text-xs text-red-400 hover:text-red-300">Leave</button>
+                    </div>
                 </div>
-            </div>
+            </Card>
         </div>
     );
 }
@@ -1034,6 +951,13 @@ const CardCarousel = forwardRef(({ players, spinning, onFinish, forceStop = fals
             // Idle drift
             state.velocity *= 0.98;
             if (Math.abs(state.velocity) < 0.1) state.velocity = 0;
+        }
+
+        // --- NEW: Client-side spin for Read-Only mode (Players) ---
+        // If showOnly is true (player view), we just spin endlessly until the 'spinning' prop becomes false
+        // The host controls the actual stop logic.
+        if (showOnly && spinning) {
+             if (state.velocity < MAX_SPEED) state.velocity += 1.5;
         }
 
         state.offset += state.velocity;
