@@ -28,8 +28,15 @@ import {
   Square,
   Trophy,
   Monitor,
-  X 
+  X,
+  Info
 } from 'lucide-react';
+
+// --- IMAGE CONFIGURATION ---
+// We use a direct path string here to avoid build errors if the file isn't strictly in the build context.
+// Ideally, place 'Lifra.jpg' in your 'public' folder for this path to work reliably.
+const devLogo = './Lifra.jpg'; 
+const githubAvatar = 'https://github.com/superEnne.png';
 
 // --- CONFIGURATION ---
 const firebaseConfig = {
@@ -80,6 +87,7 @@ export default function App() {
   const [view, setView] = useState('home'); 
   const [roomCode, setRoomCode] = useState('');
   const [error, setError] = useState('');
+  const [showAbout, setShowAbout] = useState(false);
   
   // Auth Setup
   useEffect(() => {
@@ -124,6 +132,15 @@ export default function App() {
             </div>
             <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">CamSpin</h1>
           </div>
+          
+          {/* About Button */}
+          <button 
+            onClick={() => setShowAbout(true)}
+            className="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-full transition-all"
+            title="About the Dev"
+          >
+            <Info className="w-6 h-6" />
+          </button>
         </header>
 
         {view === 'home' && (
@@ -155,10 +172,94 @@ export default function App() {
             <button onClick={() => setError('')} className="ml-2 opacity-50 hover:opacity-100"><XCircle size={16}/></button>
           </div>
         )}
+
+        {/* About Dev Modal */}
+        {showAbout && (
+          <AboutDevModal onClose={() => setShowAbout(false)} />
+        )}
       </div>
     </div>
   );
 }
+
+// --- ABOUT DEV MODAL ---
+function AboutDevModal({ onClose }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-200">
+      <div 
+        className="relative w-full max-w-md bg-slate-900 border border-purple-500/30 rounded-3xl p-8 shadow-2xl shadow-purple-900/20 transform animate-in zoom-in-95 duration-200"
+        onClick={e => e.stopPropagation()}
+      >
+        <button 
+          onClick={onClose}
+          className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white hover:bg-white/10 rounded-full transition-colors"
+        >
+          <X size={20} />
+        </button>
+
+        <div className="flex flex-col items-center text-center">
+          {/* Dev Image/Logo */}
+          <div className="w-24 h-24 mb-6 rounded-full p-1 bg-gradient-to-tr from-fuchsia-500 to-purple-600 shadow-lg shadow-fuchsia-500/20">
+             <div className="w-full h-full rounded-full overflow-hidden bg-slate-950 relative">
+               <img 
+                 src={devLogo} 
+                 alt="Lifra Devs" 
+                 className="w-full h-full object-cover"
+                 onError={(e) => {
+                   // If the local image fails (e.g. filename mismatch), we try the Github avatar
+                   if (e.target.src.endsWith('Lifra.jpg')) {
+                      e.target.src = githubAvatar;
+                   } else {
+                      e.target.style.display = 'none';
+                      e.target.parentElement.innerHTML = '<div class="w-full h-full flex items-center justify-center text-fuchsia-500 text-xs font-bold">LIFRA</div>';
+                   }
+                 }}
+               />
+             </div>
+          </div>
+
+          <h3 className="text-2xl font-bold text-white mb-1">lifra.devs</h3>
+          <p className="text-fuchsia-400 text-sm font-medium tracking-wide uppercase mb-6">Lead Developer</p>
+          
+          <p className="text-slate-400 mb-8 text-sm leading-relaxed">
+            Kalapastangan ang di ka ibigin, kalokohan ang di ka isipin♫. Check out my socials below!
+          </p>
+
+          {/* Social Links */}
+          <div className="flex gap-4 w-full justify-center">
+            <SocialLink href="https://github.com/superEnne" label="GitHub">
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd"></path></svg>
+            </SocialLink>
+            
+            <SocialLink href="https://www.facebook.com/elton.johnlennon.bundukin15" label="Facebook">
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd"></path></svg>
+            </SocialLink>
+
+            <SocialLink href="https://www.linkedin.com/in/elton-bundukin-68b386216/" label="LinkedIn">
+               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fillRule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" clipRule="evenodd"></path></svg>
+            </SocialLink>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const SocialLink = ({ href, children, label }) => (
+  <a 
+    href={href}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="w-12 h-12 flex items-center justify-center rounded-xl bg-slate-800 border border-slate-700 text-slate-400 hover:text-white hover:bg-fuchsia-600 hover:border-fuchsia-500 hover:-translate-y-1 transition-all duration-200 group relative"
+    aria-label={label}
+  >
+    {children}
+    {/* Tooltip */}
+    <span className="absolute -bottom-8 px-2 py-1 bg-black text-xs rounded text-white opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+      {label}
+    </span>
+  </a>
+);
 
 // --- HOME SCREEN ---
 function HomeScreen({ onHost, onJoin, onRejoin }) {
